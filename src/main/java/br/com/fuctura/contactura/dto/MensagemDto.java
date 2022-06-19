@@ -2,6 +2,7 @@ package br.com.fuctura.contactura.dto;
 
 import java.time.LocalDateTime;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ApiModel(description = "Classe representatica do DTO de mensagem.")
 public class MensagemDto {
 	@ApiModelProperty(value = "Status http code")
 	private int status;

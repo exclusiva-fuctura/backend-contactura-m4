@@ -1,10 +1,14 @@
 package br.com.fuctura.contactura.dto;
 
 import br.com.fuctura.contactura.entities.Usuario;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@ApiModel(description = "Classe representatica do DTO do usuario.")
 public class UsuarioDto {
 
 	@ApiModelProperty(value = "Email do usuario")
@@ -31,6 +35,10 @@ public class UsuarioDto {
 	
 	public UsuarioDto(LoginDto login) {
 		this.email = login.getEmail();
+	}
+	
+	public Usuario toUsuario() {
+		return new Usuario(this);
 	}
 	
 }

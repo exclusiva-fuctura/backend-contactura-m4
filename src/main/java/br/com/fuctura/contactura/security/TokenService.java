@@ -65,11 +65,22 @@ public class TokenService {
 		}	
 	}
 
+	/**
+	 * Extrai o id do usuario do token
+	 * @param token
+	 * @return UUID 
+	 */
 	public String getIdUsuaurio(String token) {
 		Claims body = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
 		return body.getSubject();
 	}
 	
+	/**
+	 * Obtem o token enviado
+	 * @param authHeader
+	 * @return a string do token
+	 * @throws TokenDeniedException
+	 */
 	public String tokenHeaderVerify(String authHeader) throws TokenDeniedException {
 		// verify if exists the key Digest
 		if (!authHeader.startsWith("Bearer")) {

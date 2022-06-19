@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import br.com.fuctura.contactura.config.SwaggerConfigurations;
 import br.com.fuctura.contactura.dto.MensagemDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
+@Api(tags = {SwaggerConfigurations.API_TAG})
 @RestController
 @RequestMapping("/")
 public class ApiController {

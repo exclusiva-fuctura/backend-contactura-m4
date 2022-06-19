@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fuctura.contactura.config.SwaggerConfigurations;
 import br.com.fuctura.contactura.dto.LoginDto;
 import br.com.fuctura.contactura.entities.Usuario;
 import br.com.fuctura.contactura.security.TokenService;
-import br.com.fuctura.contactura.services.AutenticadorService;
-import br.com.fuctura.contactura.services.LoginInvalidException;
-import br.com.fuctura.contactura.services.UsuarioNotFoundException;
+import br.com.fuctura.contactura.services.UsuarioService;
+import br.com.fuctura.contactura.services.exceptions.LoginInvalidException;
+import br.com.fuctura.contactura.services.exceptions.UsuarioNotFoundException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@Api(tags = {SwaggerConfigurations.AUTENTICADOR_TAG})
 @RestController
 @RequestMapping("/api")
 public class AutenticadorController {
@@ -28,8 +31,8 @@ public class AutenticadorController {
 	private TokenService tokenService;
 	
 	@Autowired
-	private AutenticadorService autenticadorService;
-
+	private UsuarioService usuarioService;
+	
 	@ApiOperation(value = "Autentica o usuario para acessar o sistema CONTACTURA")
 	@ApiResponses(value = {
 	    @ApiResponse(code = 201, message = "Usuario Autenticado"),
@@ -45,7 +48,7 @@ public class AutenticadorController {
 			this.isValidDto(login);
 			
 			// autenticar usuario
-			Usuario usuario = this.autenticadorService
+			Usuario usuario = this.usuarioService
 					.loadUserByEmailSenha(login.getEmail(), login.getSenha());
 			
 			

@@ -1,11 +1,15 @@
 package br.com.fuctura.contactura.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -49,4 +53,10 @@ public class Usuario implements Serializable{
 		this.senha = userDto.getSenha();
 	}
 	
+	@OneToMany(mappedBy="usuario", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	private List<Lancamento> lancamentos;
+	
+	public UsuarioDto toDto() {
+		return new UsuarioDto(this);
+	}
 }
