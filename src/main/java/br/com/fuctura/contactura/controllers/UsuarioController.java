@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fuctura.contactura.config.SwaggerConfigurations;
-import br.com.fuctura.contactura.dto.MensagemDto;
 import br.com.fuctura.contactura.dto.UsuarioDto;
 import br.com.fuctura.contactura.entities.Usuario;
 import br.com.fuctura.contactura.services.UsuarioService;
