@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,6 +95,7 @@ public class UsuarioController {
 	@ApiOperation(value = "Alterar usuario")
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Requisição executada com sucesso"),
+	    @ApiResponse(code = 400, message = "Ocorreu erro na requisição"),
 	    @ApiResponse(code = 401, message = "Acesso negado"),	    
 	    @ApiResponse(code = 404, message = "Usuário não encontrado"),
 	    
@@ -109,9 +111,14 @@ public class UsuarioController {
 		}
 		
 		try {
-			this.usuarioService.checkDto(usuarioDto);
+			// para nao cair na checagem da senha nao informada
+			if (null == usuarioDto.getSenha()) usuarioDto.setSenha("");
+			
+			this.usuarioService.checkDto(usuarioDto);		
+
 		} catch (UsuarioFieldRequiredException e) {
 			usuarioDto.setMensagem(e.getMessage());
+			usuarioDto.setSenha(null);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usuarioDto);	
 		}		
 		
@@ -123,18 +130,24 @@ public class UsuarioController {
 		// efetuar as laterações necessárias
 		Usuario usuarioUpdated = this.usuarioService.updateFromDto(usuario.get(), usuarioDto);
 		
-		
-		this.usuarioService.save(usuarioUpdated);
+		// incluir a nova senha se informado
+		if (!usuarioDto.getSenha().isEmpty()) {
+			usuarioUpdated.setSenha(usuarioDto.getSenha());
+		}
+				
+		this.usuarioService.update(usuarioUpdated);
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.headers(this.usuarioService.getAuthHeader(usuario.get()))
 				.body(usuarioUpdated.toDto());	
 	}
+	
 
 	@ApiOperation(value = "Criar usuario")
 	@ApiResponses(value = {
 	    @ApiResponse(code = 200, message = "Requisição executada com sucesso"),
-	    @ApiResponse(code = 401, message = "Acesso negado"),	    
+	    @ApiResponse(code = 400, message = "Ocorreu erro na requisição"),
+	    @ApiResponse(code = 401, message = "Acesso negado"),	
 	    @ApiResponse(code = 404, message = "Usuário não encontrado"),
 	    
 	})
@@ -152,19 +165,53 @@ public class UsuarioController {
 			this.usuarioService.checkDto(usuarioDto);
 		} catch (UsuarioFieldRequiredException e) {
 			usuarioDto.setMensagem(e.getMessage());
+			usuarioDto.setSenha(null);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usuarioDto);	
 		}		
 		
 		Optional<Usuario> usuarioDB = this.usuarioService.findByEmail(usuarioDto.getEmail());		
+		if (usuarioDB.isPresent()) {
+			usuarioDto.setMensagem("Email já cadastrado");
+			usuarioDto.setSenha(null);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(usuarioDto);	
+		}
+
+		// criar o usuario
+		Usuario saved = this.usuarioService.saveDto(usuarioDto);
+		
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.headers(this.usuarioService.getAuthHeader(usuario.get()))
+				.body(saved.toDto());	
+	}
+	
+	@ApiOperation(value = "Excluir usuario")
+	@ApiResponses(value = {
+	    @ApiResponse(code = 200, message = "Requisição executada com sucesso"),
+	    @ApiResponse(code = 401, message = "Acesso negado"),	    
+	    @ApiResponse(code = 404, message = "Usuário não encontrado"),
+	    
+	})
+	@DeleteMapping(value = "/usuario/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<UsuarioDto> delete(@PathVariable("id") String id, 
+			@RequestHeader("Authorization") String authHeader) {
+					
+		// verificar autorização
+		Optional<Usuario> usuario = this.usuarioService.checkHeader(authHeader);
+		if (usuario.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+			
+		Optional<Usuario> usuarioDB = this.usuarioService.findById(id);		
 		if (usuarioDB.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);	
 		}
 
-		// criar o usuario
-		this.usuarioService.saveDto(usuarioDto);
+		UsuarioDto dto = usuarioDB.get().toDto();
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
+		this.usuarioService.delete(usuarioDB.get());
+		
+		return ResponseEntity.status(HttpStatus.OK)
 				.headers(this.usuarioService.getAuthHeader(usuario.get()))
-				.body(usuarioDto);	
+				.body(dto);	
 	}
 }

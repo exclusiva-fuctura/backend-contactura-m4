@@ -10,6 +10,7 @@ import br.com.fuctura.contactura.entities.Usuario;
 import br.com.fuctura.contactura.security.TokenDeniedException;
 import br.com.fuctura.contactura.security.TokenNoExistsException;
 import br.com.fuctura.contactura.security.TokenService;
+import br.com.fuctura.contactura.services.exceptions.UsuarioNotFoundException;
 
 @Service
 public class AutenticadorService {
@@ -25,8 +26,10 @@ public class AutenticadorService {
 	 * @return Optional<String> id do usuário extraido do token
 	 * @throws TokenDeniedException 
 	 * @throws TokenNoExistsException 
+	 * @throws UsuarioNotFoundException 
 	 */
-	public Optional<String> hasAuthorization(String authHeader) throws TokenDeniedException, TokenNoExistsException {
+	public Optional<String> hasAuthorization(String authHeader) throws TokenDeniedException, 
+		TokenNoExistsException, UsuarioNotFoundException {
 		
 		// verifica se tem Token
 		if (null == authHeader) {
@@ -43,6 +46,9 @@ public class AutenticadorService {
 
 		// obter o id do usuario
 		String usuarioID = this.tokenService.getIdUsuaurio(token);
+		if (null == usuarioID || usuarioID.isEmpty() || usuarioID.isBlank()) {
+			throw new UsuarioNotFoundException("Usuário não encontrado");			
+		}
 	
 		return Optional.of(usuarioID);
 	}

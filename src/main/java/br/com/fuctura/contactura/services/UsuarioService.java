@@ -55,6 +55,13 @@ public class UsuarioService {
 		return this.repository.save(usuario);
 	}
 	
+	public Usuario update(Usuario usuario) {
+		String senha = this.securePasswordService
+		           .encode(usuario.getSenha());
+		usuario.setSenha(senha);
+		return this.repository.save(usuario);
+	}
+	
 	/**
 	 * Procura Usuario pelo ID
 	 * @param id
@@ -79,6 +86,14 @@ public class UsuarioService {
 	 */
 	public List<Usuario> findAll() {
 		return this.repository.findAll();
+	}
+	
+	/**
+	 * Remover usuario da base
+	 * @param usuario
+	 */
+	public void delete(Usuario usuario) {
+		this.repository.delete(usuario);
 	}
 	
 	/**
@@ -113,9 +128,9 @@ public class UsuarioService {
 				return Optional.of(usuarioDB.get());
 			}				
 			
-		} catch (TokenDeniedException | TokenNoExistsException e) {
+		} catch (TokenDeniedException | TokenNoExistsException | UsuarioNotFoundException e) {
 			log.warn(TITLE + e.getMessage());			
-			return Optional.empty();
+			return Optional.empty();	
 		}
 		
 		return Optional.empty();
@@ -180,11 +195,9 @@ public class UsuarioService {
 		
 		if (!usuario.getEmail().equals(usuarioDto.getEmail())) usuario.setEmail(usuarioDto.getEmail());
 		
-		if (!usuario.getSenha().equals(usuarioDto.getSenha())) usuario.setSenha(usuarioDto.getSenha());
-		
 		if (!usuario.getNome().equals(usuarioDto.getNome())) usuario.setNome(usuarioDto.getNome());
 		
-		if (!usuario.getTelefone().equals(usuarioDto.getTelefone())) usuario.setTelefone(usuarioDto.getTelefone());
+		if (usuario.getTelefone() != usuarioDto.getTelefone()) usuario.setTelefone(usuarioDto.getTelefone());
 		
 		return usuario;
 	}

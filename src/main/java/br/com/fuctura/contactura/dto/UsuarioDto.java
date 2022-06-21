@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "Classe representatica do DTO do usuario.")
 public class UsuarioDto {
 
+	@ApiModelProperty(value = "Id do usuario")
+	private String id;
+
 	@ApiModelProperty(value = "Email do usuario")
 	private String email;
 	
@@ -27,10 +30,10 @@ public class UsuarioDto {
 	private String mensagem;
 	
 	public UsuarioDto(Usuario usuario) {
+		this.id = usuario.getId();
 		this.email = usuario.getEmail();
 		this.nome = usuario.getNome();
-		this.telefone = usuario.getTelefone();
-		this.senha = usuario.getSenha();
+		this.telefone = usuario.getTelefone();		
 	}
 	
 	public UsuarioDto(LoginDto login) {
