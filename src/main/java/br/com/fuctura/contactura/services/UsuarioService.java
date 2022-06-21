@@ -15,6 +15,7 @@ import br.com.fuctura.contactura.repositories.UsuarioRepository;
 import br.com.fuctura.contactura.security.SecurePasswordService;
 import br.com.fuctura.contactura.security.TokenDeniedException;
 import br.com.fuctura.contactura.security.TokenNoExistsException;
+import br.com.fuctura.contactura.services.exceptions.UsuarioFieldRequiredException;
 import br.com.fuctura.contactura.services.exceptions.UsuarioNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,6 +72,14 @@ public class UsuarioService {
 	public Optional<Usuario> findByEmail(String email) {
 		return this.repository.findByEmail(email);
 	}
+		
+	/**
+	 * Lista todos os usuarios cadastrados
+	 * @return lista de usuarios
+	 */
+	public List<Usuario> findAll() {
+		return this.repository.findAll();
+	}
 	
 	/**
 	 * Verifica se a senha é váida com o usuario do banco
@@ -84,14 +93,6 @@ public class UsuarioService {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Lista todos os usuarios cadastrados
-	 * @return lista de usuarios
-	 */
-	public List<Usuario> findAll() {
-		return this.repository.findAll();
 	}
 	
 	/**
@@ -148,4 +149,44 @@ public class UsuarioService {
 		
 		throw new UsuarioNotFoundException("Dados do usuário inválido ou não cadastrado!");
 	}
+	
+	/**
+	 * Verifica os campos obrigatórios
+	 * @param usuarioDto
+	 * @throws UsuarioFieldRequiredException
+	 */
+	public void checkDto(UsuarioDto usuarioDto) throws UsuarioFieldRequiredException {
+		
+		if (null == usuarioDto.getEmail()) {
+			throw new UsuarioFieldRequiredException("Email");
+		}
+		
+		if (null == usuarioDto.getNome()) {
+			throw new UsuarioFieldRequiredException("Nome");
+		}
+		
+		if (null == usuarioDto.getSenha()) {
+			throw new UsuarioFieldRequiredException("Senha");
+		}
+	}
+
+	/**
+	 * Realiza as atualizações necessárias
+	 * @param usuario
+	 * @param usuarioDto
+	 * @return Instância do Usuario alterado
+	 */
+	public Usuario updateFromDto(Usuario usuario, UsuarioDto usuarioDto) {
+		
+		if (!usuario.getEmail().equals(usuarioDto.getEmail())) usuario.setEmail(usuarioDto.getEmail());
+		
+		if (!usuario.getSenha().equals(usuarioDto.getSenha())) usuario.setSenha(usuarioDto.getSenha());
+		
+		if (!usuario.getNome().equals(usuarioDto.getNome())) usuario.setNome(usuarioDto.getNome());
+		
+		if (!usuario.getTelefone().equals(usuarioDto.getTelefone())) usuario.setTelefone(usuarioDto.getTelefone());
+		
+		return usuario;
+	}
+	
 }
