@@ -74,7 +74,8 @@ public class UsuarioController {
 	    
 	})
 	@GetMapping(value = "/usuario/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UsuarioDto> show(@PathVariable("id") String id, @RequestHeader("Authorization") String authHeader) {
+	public @ResponseBody ResponseEntity<UsuarioDto> show(@PathVariable("id") String id, 
+			@RequestHeader("Authorization") String authHeader) {
 					
 		// verificar autorização
 		Optional<Usuario> usuario = this.usuarioService.checkHeader(authHeader);
@@ -97,11 +98,11 @@ public class UsuarioController {
 	    @ApiResponse(code = 200, message = "Requisição executada com sucesso"),
 	    @ApiResponse(code = 400, message = "Ocorreu erro na requisição"),
 	    @ApiResponse(code = 401, message = "Acesso negado"),	    
-	    @ApiResponse(code = 404, message = "Usuário não encontrado"),
-	    
+	    @ApiResponse(code = 404, message = "Usuário não encontrado"),	    
 	})
 	@PutMapping(value = "/usuario/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UsuarioDto> update(@PathVariable("id") String id, @RequestBody UsuarioDto usuarioDto, 
+	public @ResponseBody ResponseEntity<UsuarioDto> update(@PathVariable("id") String id, 
+			@RequestBody UsuarioDto usuarioDto, 
 			@RequestHeader("Authorization") String authHeader) {
 					
 		// verificar autorização
