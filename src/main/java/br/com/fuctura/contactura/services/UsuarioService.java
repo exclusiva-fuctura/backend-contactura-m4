@@ -104,7 +104,8 @@ public class UsuarioService {
 	 * @throws NoSuchAlgorithmException 
 	 */
 	public boolean isValidPassword(String senha, Usuario usuario) {
-		if (null != usuario && usuario.getSenha().equals(this.securePasswordService.encode(senha))) {
+		String password = this.securePasswordService.encode(senha);
+		if (null != usuario && usuario.getSenha().equals(password)) {
 			return true;
 		}
 		return false;
@@ -157,9 +158,9 @@ public class UsuarioService {
 		Optional<Usuario> usuario = this.findByEmail(email);		
 		if (usuario.isPresent()) {
 			// verificar se a senha é compatível
-//			if (this.isValidPassword(senha, usuario.get())) {
+			if (this.isValidPassword(senha, usuario.get())) {
 				return usuario.get();			
-//			}
+			}
 		}
 		
 		throw new UsuarioNotFoundException("Dados do usuário inválido ou não cadastrado!");

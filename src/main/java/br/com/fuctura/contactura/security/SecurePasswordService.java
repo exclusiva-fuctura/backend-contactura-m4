@@ -5,19 +5,13 @@ import java.security.NoSuchAlgorithmException;
 
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class SecurePasswordService {
 	
 	public String encode(String password) {
-		try {
-			return this.get_SHA_256_SecurePassword(password, this.getSalt());       
-		} catch (NoSuchAlgorithmException ex) {
-			log.error("[SecurePasswordService] Erro no salt: " + ex.getMessage());
-			return "NO PASS";
-		}
+		return this.get_SHA_256_SecurePassword(password, "");       
+
 	}
 
 	private String get_SHA_256_SecurePassword(String passwordToHash,
