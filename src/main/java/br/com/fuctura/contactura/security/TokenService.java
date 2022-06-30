@@ -82,9 +82,13 @@ public class TokenService {
 	 * @throws TokenDeniedException
 	 */
 	public String tokenHeaderVerify(String authHeader) throws TokenDeniedException {
-		// verify if exists the key Digest
+		// vericar se existe a key Bearer
 		if (!authHeader.startsWith("Bearer")) {
 			throw new TokenDeniedException("Token não aceito");
+		}
+		// verificar se existe algum token 
+		if (authHeader.length() < 7) {
+			throw new TokenDeniedException("Token inválido");
 		}
 		
 		return authHeader.substring(7);

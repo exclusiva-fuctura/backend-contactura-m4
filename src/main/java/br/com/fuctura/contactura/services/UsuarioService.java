@@ -32,7 +32,7 @@ public class UsuarioService {
 	@Autowired
 	private SecurePasswordService securePasswordService;
 	
-	private static final String TITLE = "[USUARIO SSERVICE] ";
+	private static final String TITLE = "[USUARIO SERVICE] ";
 	
 	/**
 	 * Persiste o objeto DTO do usuario alterando a senha
