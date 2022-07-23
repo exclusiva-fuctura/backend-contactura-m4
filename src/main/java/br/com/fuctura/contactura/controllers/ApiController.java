@@ -34,7 +34,7 @@ public class ApiController {
 	
 	@ApiIgnore
 	@GetMapping()
-	public RedirectView redirectWagger() {							
+	public RedirectView redirectSwagger() {							
 		return new RedirectView("/swagger-ui.html");
 	}
 }

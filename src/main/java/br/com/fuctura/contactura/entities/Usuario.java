@@ -1,6 +1,7 @@
 package br.com.fuctura.contactura.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,9 @@ public class Usuario implements Serializable{
 	
 	@Column(name="usua_telefone")
 	private Long telefone;
+	
+	@Column(name="usua_criacao", columnDefinition = "timestamp default now()")
+	private LocalDateTime createdAt;
 	
 	public Usuario(UsuarioDto userDto) {
 		this.email = userDto.getEmail();
