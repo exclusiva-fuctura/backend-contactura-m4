@@ -74,7 +74,7 @@ public class UsuarioController {
 	    
 	})
 	@GetMapping(value = "/usuario/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UsuarioDto> show(@PathVariable("id") String id, 
+	public @ResponseBody ResponseEntity<UsuarioDto> show(@PathVariable String id, 
 			@RequestHeader("Authorization") String authHeader) {
 					
 		// verificar autorização
@@ -101,7 +101,7 @@ public class UsuarioController {
 	    @ApiResponse(code = 404, message = "Usuário não encontrado"),	    
 	})
 	@PutMapping(value = "/usuario/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UsuarioDto> update(@PathVariable("id") String id, 
+	public @ResponseBody ResponseEntity<UsuarioDto> update(@PathVariable String id, 
 			@RequestBody UsuarioDto usuarioDto, 
 			@RequestHeader("Authorization") String authHeader) {
 					
@@ -153,14 +153,7 @@ public class UsuarioController {
 	    
 	})
 	@PostMapping(value = "/usuario", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UsuarioDto> store(@RequestBody UsuarioDto usuarioDto, 
-			@RequestHeader("Authorization") String authHeader) {
-					
-		// verificar autorização
-		Optional<Usuario> usuario = this.usuarioService.checkHeader(authHeader);
-		if (usuario.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-		}
+	public @ResponseBody ResponseEntity<UsuarioDto> store(@RequestBody UsuarioDto usuarioDto) {
 		
 		try {
 			this.usuarioService.checkDto(usuarioDto);
@@ -180,9 +173,7 @@ public class UsuarioController {
 		// criar o usuario
 		Usuario saved = this.usuarioService.saveDto(usuarioDto);
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.headers(this.usuarioService.getAuthHeader(usuario.get()))
-				.body(saved.toDto());	
+		return ResponseEntity.status(HttpStatus.CREATED).body(saved.toDto());	
 	}
 	
 	@ApiOperation(value = "Excluir usuario")

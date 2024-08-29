@@ -140,7 +140,7 @@ public class LancamentoController {
 	    @ApiResponse(code = 404, message = "Lançamento não encontrado"),
 	})
 	@PutMapping(value = "/lancamento/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<LancamentoDto> update(@PathVariable("id") Long id, @RequestBody LancamentoDto lancamentoDto,
+	public @ResponseBody ResponseEntity<LancamentoDto> update(@PathVariable Long id, @RequestBody LancamentoDto lancamentoDto,
 			@RequestHeader("Authorization") String authHeader) {
 		
 		// verificar autorização
@@ -171,11 +171,11 @@ public class LancamentoController {
 		}
 		
 		// verifica se o objeto é igual
-		Lancamento lancamento = this.lancamentoService.updateFromDto(lancamentoDB.get(), lancamentoDto);
-		if (lancamentoDB.get().equals(lancamento)) {
+		if (lancamentoDB.get().equals(new Lancamento(lancamentoDto))) {
 			lancamentoDto.setMensagem("Lançamento idêntico já existente");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(lancamentoDto);	
 		}
+		Lancamento lancamento = this.lancamentoService.updateFromDto(lancamentoDB.get(), lancamentoDto);
 			
 		this.lancamentoService.save(lancamento);
 				
